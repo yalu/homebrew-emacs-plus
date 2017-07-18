@@ -6,16 +6,17 @@ class EmacsPlus < Formula
   sha256 "59b55194c9979987c5e9f1a1a4ab5406714e80ffcfd415cc6b9222413bc073fa"
 
   bottle do
-    root_url "https://s3.amazonaws.com/d12frosted/emacs-plus/bottles"
-    sha256 "aca2af5484f05d06c67273f50fe8851a27f48ef0e265fba1fe00456bdab504de" => :sierra
-    sha256 "0cad5513de68ec93b4f522fd6a065ee163bc880a5e8091794fb8b3da3dc635e5" => :el_capitan
+    root_url "https://dl.bintray.com/d12frosted/emacs-plus"
+    rebuild 1
+    sha256 "f6fa36d3afb47d8251fdade4d967deca9fac470ad029b6db04650643f2623d1f" => :sierra
+    # sha256 "0cad5513de68ec93b4f522fd6a065ee163bc880a5e8091794fb8b3da3dc635e5" => :el_capitan
   end
 
   head do
     url "https://github.com/emacs-mirror/emacs.git"
 
     depends_on "autoconf" => :build
-    depends_on "automake" => :build
+    depends_on "gnu-sed" => :build
     depends_on "texinfo" => :build
   end
 
@@ -34,7 +35,7 @@ class EmacsPlus < Formula
   option "with-x11",
          "Experimental: build with x11 support"
   option "with-no-title-bars",
-         "Experimental: build with a patch for no title bars on frames (--HEAD is not supported)"
+         "Experimental: build with a patch for no title bars on frames (--HEAD has this built-in via undecorated flag)"
   option "with-natural-title-bar",
          "Experimental: use a title bar colour inferred by your theme"
 
@@ -69,8 +70,7 @@ class EmacsPlus < Formula
   # more info here: https://lists.gnu.org/archive/html/bug-gnu-emacs/2016-10/msg00072.html
   if build.with? "no-title-bars"
     if build.head? or build.devel?
-      odie "--with-no-title-bars not currently supported on --devel, nor on --HEAD " \
-           "(because the patch as written does not successfully apply)."
+      odie "--with-no-title-bars is unnecessary on --HEAD, try (setq default-frame-alist '((undecorated . t)))"
     end
 
     patch do
